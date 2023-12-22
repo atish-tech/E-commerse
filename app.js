@@ -9,7 +9,7 @@ app.use(cors());
 
 // default get api
 app.get('/' , (request , response) => {
-    response.json({message : 'API is running'});
+    response.status(200).json({message : 'API is running'});
 })
 
 // local routes
