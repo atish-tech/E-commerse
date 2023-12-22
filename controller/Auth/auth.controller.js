@@ -1,9 +1,7 @@
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 
 const userModel = require('../../model/Auth/user.model');
-const userOtp = require('../../model/Auth/user.otp');
 const { newToken } = require('../../utils/utility.function');
-const { sendmail } = require('../../config/sendEmail');
 
 // register
 const registerController = async (request, response) => {
@@ -12,25 +10,13 @@ const registerController = async (request, response) => {
         // email exist
         const checkUser = await userModel.findOne({ email });
         if (checkUser) {
-            if (!checkUser.isVerified) {
-                const OTP = Math.floor(100000 + Math.random() * 900000);   // OTP
-                await sendmail("Email Varification", OTP);   // Send otp through Email
-                await userOtp.findOneAndUpdate({id : checkUser.id} , { otp: OTP });  // Save user otp in our database
-
-                return response.status(200).send({ message: "Please Verify your Email" });
-            }
             return response.status(400).send({ message: "Email Already Exist" });
-
         }
         else {
-            const hash = await bcrypt.hash(password, 9);   // Hash Password
-            const OTP = Math.floor(100000 + Math.random() * 900000);   // OTP
+            const hash = await bcryptjs.hash(password, 9);   // Hash Password
             const user = await userModel.create({   // Add New user in DB
-                ...request.body, password: hash, isVerified: false, isSeller: false, otp: OTP,
+                ...request.body, password: hash, isVerified: true, isSeller: false,
             });
-
-            await userOtp.create({ id: user._id, email: user.email, otp: OTP });  // Save user otp in our database
-            await sendmail("Email Varification", OTP);   // Send otp through Email
 
             let token = await newToken(user);
             response.status(201).json({ message: 'Account Created Sucessful', user, token });
@@ -40,80 +26,6 @@ const registerController = async (request, response) => {
     }
 }
 
-// verify user otp
-const verifyUserOtp = async (request, response) => {
-    try {
-        const { otp } = request.body;
-        const tempUserOtp = await userOtp.findOne({ otp });
-        if (!tempUserOtp) {  // if OTP not exist in our database
-            response.status(500).json({ message: "OTP not match , Please check your Email" });
-            return;
-        }
-        if (tempUserOtp.otp === otp) {
-            await userModel.findByIdAndUpdate(tempUserOtp.id, { isVerified: true });
-            const user = await userModel.findById(tempUserOtp.id);
-            await userOtp.findByIdAndDelete(tempUserOtp._id);
-            response.status(201).json({ message: "Email Varified Sucessfull", user });
-        }
-        else {
-            response.status(400).json({ message: "Wrong OTP" });
-        }
-    }
-    catch (error) {
-        response.status(400).json({ message: "Email Not Varified" });
-    }
-}
-
-// Update Password 
-const updatePassword = async (request , response) => {
-    try {
-        const hash = await bcrypt.hash(request.body.password, 9);   // Hash Password
-
-        const temp = await userModel.findOneAndUpdate({email : request.body.email} , {password : hash});
-        response.status(200).json({message : "Password Update Sucessfull" , temp});
-    } 
-    catch (error) {
-        response.status(400).json({message : "Server Error"});
-    }
-}
-
-// send otp in email
-const sendOtpOnEmail = async (request , response) => {
-    try {
-        const user = await userModel.findOne({email : request.body.email});
-        if(!user) {
-            return response.status(400).json({message : "Email Not Exist , Please Register your account" });
-        }
-        const OTP = Math.floor(100000 + Math.random() * 900000);   // OTP
-        await sendmail(request.body.message, OTP);   // Send otp through Email
-        await userOtp.create({ id: user._id, email: user.email, otp: OTP });  // Save user otp in our database
-        return response.status(200).json({message : "OTP send to your email"});
-    } 
-    catch (error) {
-        console.log(error);
-        response.status(400).json({ message: "Server Error" });    
-    }
-}
-
-// login with google
-const googleAuth = async (request, response) => {
-    try {
-        const { email } = request.body;
-        let user = await userModel.findOne({ email });
-        if (user) {
-            let token = await newToken(user);
-            return response.status(200).json({user , token});
-        }
-        else {
-            user = await userModel.create({ ...request.body, password: "google-login", isVerified: true, isSeller: false , isAuthGoogle : true});
-            let token = await newToken(user);
-            response.status(200).send({ message: "Login Sucessfull", token , user })
-        }
-    }
-    catch (error) {
-        response.status(400).json({ message: "Server Error" });
-    }
-}
 
 // seller Registration
 const sellerRegisterCoontroller = async (request, response) => {
@@ -125,16 +37,14 @@ const sellerRegisterCoontroller = async (request, response) => {
         // create seller account
         else {
             const hash = await bcrypt.hash(password, 9);    // Hash Password
-            const OTP = Math.floor(100000 + Math.random() * 900000);   // OTP
             const user = await userModel.create({    // Add New user in DB
-                ...request.body, password: hash, isVerified: false
+                ...request.body, password: hash, isVerified: true
             });
-            await userOtp.create({ id: user._id, email: user.email, otp: OTP });  // Save user otp in our database
-            await sendmail("Email Varification", OTP);   // Send otp through Email
             let token = await newToken(user);
             response.status(201).json({ message: "Account Created Sucessfull , please Varify your enail", user, token });
         }
-    } catch (error) {
+    }
+    catch (error) {
         response.status(400).json({ message: "Server Error" });
     }
 }
@@ -154,7 +64,7 @@ const loginController = async (request, response) => {
             return response.status(400).json({ message: "Email Not Verified", });
         }
         // check password
-        if (await user.matchPassword(password)) {
+        if (await bcryptjs.compare(password , user.password)) {
             let token = newToken(user);
             return response.status(201).json({ message: "Login Sucessfull", user, token });
         }
@@ -281,11 +191,7 @@ module.exports = {
     userDetailController,
     sellerLoginController,
     sellerRegisterCoontroller,
-    verifyUserOtp,
     deleteUser,
     updateUser,
     addFavorites,
-    googleAuth,
-    sendOtpOnEmail,
-    updatePassword,
 }

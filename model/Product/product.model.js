@@ -6,7 +6,7 @@ const productSchema = mongoose.Schema({
     category : {type : String , require : true},
     picture : {type : Array} ,
     review : {type : Array} ,
-    seller : {type : mongoose.Schema.Types.ObjectId , ref : "users"}
+    seller : {type : mongoose.Schema.Types.ObjectId , ref : "e-commerse-users"}
 });
 
 const productModel = mongoose.model('products' , productSchema);

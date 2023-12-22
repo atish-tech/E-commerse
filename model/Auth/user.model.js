@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     image: { type: String },
@@ -27,16 +27,15 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    otp: { type: String },
     history: { type: Array },
     favorites: { type: Array },
 
 }, { timestamps: true });
 
 // match user password with data base
-userSchema.methods.matchPassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
-};
+// userSchema.methods.matchPassword = async function (enteredPassword) {
+//     return await bcrypt.compare(enteredPassword, this.password);
+// };
 
-const user = mongoose.model('users', userSchema);
+const user = mongoose.model('e-commerse-users', userSchema);
 module.exports = user;
