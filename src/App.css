@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.App {
+  background-color: rgb(46, 43, 43);
+  color: aliceblue;
+}
+
+
