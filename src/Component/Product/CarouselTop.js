@@ -13,8 +13,8 @@ export const CarouselTop = () => {
         "https://images.unsplash.com/photo-1627637454030-5ddd536e06e5?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8emFyYXxlbnwwfHwwfHx8MA%3D%3D"
     ]
     return (
-        <div>
-            <Carousel infiniteLoop={true} showThumbs={false}>
+        <div className='m-5'>
+            <Carousel autoPlay={false} infiniteLoop={true} showThumbs={false}>
                 {
                     data.length > 0 && data.map((item) => {
                         return <div key={item}>

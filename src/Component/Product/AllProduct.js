@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { Outlet, json, useNavigate } from 'react-router'
-import '../Home/Home.css';
-import { addItemToCart, getAllProduct } from '../../Utils/routes';
+import { addItemToCart, getAllProduct, getCartProduct } from '../../Utils/routes';
 import { Carousel, IconButton } from "@material-tailwind/react";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux'
+import { addCartProductRedux, settingAllProduct, settingCartProduct } from '../../Features/ShopSlice';
 
 export const AllProduct = () => {
-    const navigateTo = useNavigate();
-    const [data, setData] = useState([]);
-    const token = JSON.parse(localStorage.getItem('code')).data.token;
 
+    const navigateTo = useNavigate();
+    const token = JSON.parse(localStorage.getItem('code')).data.token;
+    const data = useSelector(state => state.ShopStore.allProduct);
+    const dispach = useDispatch();
 
     const GetAllProductFromServer = async () => {
         try {
             const response = await axios.get(getAllProduct);
-            setData(response.data);
+            // setData(response.data);
+            dispach(settingAllProduct(response.data));
         } catch (error) {
             console.log(error);
         }
-    }
-
-    useEffect(() => {
-        GetAllProductFromServer();
-    }, [])
+    };
 
     const addItemInCart = async (id) => {
         try {
@@ -36,12 +35,33 @@ export const AllProduct = () => {
         catch (error) {
             console.log(error);
         }
-    }
-    const cartHandler = (id) => {
-        addItemInCart(id);  // Backend
-    }
+    };
 
+    const cartHandler = (item) => {
+        dispach(addCartProductRedux(item));
+        addItemInCart(item._id);  // Backend
+    };
 
+    const GetAllCartProduct = async () => {
+        try {
+            const response = await axios.get(getCartProduct, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            dispach(settingCartProduct(response.data.products));
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        if (data.length == 0) {
+            GetAllProductFromServer();
+            GetAllCartProduct();
+        }
+    }, []);
 
     return (
         <div className='all-items' >
@@ -52,15 +72,11 @@ export const AllProduct = () => {
                         <div className='flex justify-around'>
                             <h1 onClick={() => navigateTo(`/product/${item._id}`)}>{item.name}</h1>
                             <div className='flex gap-2'>
-                                <IconButton onClick={() => { cartHandler(item._id) }} >
+                                <IconButton onClick={() => { cartHandler(item) }} >
                                     <AddShoppingCartIcon fontSize='large' />
                                 </IconButton>
                             </div>
                         </div>
-
-                        {/* <h2>{item.review} </h2> */}
-                        {/* <h3>{item.category} </h3> */}
-                        {/* <p>{item.seller} </p> */}
                         <p onClick={() => navigateTo(`/product/${item._id}`)}>{item.title}</p>
                         <p></p>
                     </div>

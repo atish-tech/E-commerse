@@ -65,9 +65,11 @@ export const Register = () => {
           headers: { "Content-type": "application/json" }
         };
 
-        await axios.post(registerRoute, data, config);
-        notify("OTP Send to your Email", "info");
-        setOtp(true);
+        const response = await axios.post(registerRoute, data, config);
+        notify("Registration Sucessfull", "success")
+        console.log(response);
+        localStorage.setItem('code', JSON.stringify(response));
+        navigateTo('/');
         setLoading(false);
       }
       catch (error) {
@@ -77,6 +79,7 @@ export const Register = () => {
 
     }
   }
+
   // otp Match 
   const matchOtp = async () => {
     try {

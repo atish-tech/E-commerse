@@ -3,10 +3,12 @@ import Logo from "../../Assect/logo.png"
 import { NavLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import './Navigation.css'
-import { IconButton } from '@material-tailwind/react';
+import { IconButton, step, useSelect } from '@material-tailwind/react';
 import ShoppingCart from '@mui/icons-material/ShoppingCart';
+import { useSelector } from 'react-redux';
 
 const Navigation = () => {
+  const countItem = useSelector(state => state.ShopStore.cartProduct);
   return (
     <div className='nav-container'>
       {/* Logo */}
@@ -21,7 +23,7 @@ const Navigation = () => {
         <SearchIcon fontSize="large" />
         <NavLink to='/cart'>
           <IconButton >
-          {/* {totalProduct} */}
+          {countItem.length}
             <ShoppingCart fontSize='large' />
           </IconButton>
         </NavLink>
