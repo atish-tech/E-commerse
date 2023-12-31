@@ -1,0 +1,99 @@
+.cart-container-item {
+    flex: 9.5;
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 90vh;
+    overflow: auto;
+}
+.cart-container-item::-webkit-scrollbar {
+    width: 15px;
+    /* width of the entire scrollbar */
+}
+.cart-container-item::-webkit-scrollbar-track {
+    background: rgb(36, 36, 37);
+    /* color of the tracking area */
+}
+.cart-container-item::-webkit-scrollbar-thumb {
+    background-color: rgb(67, 71, 75);
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
+}
+
+.all-cart-items{
+    display: flex;
+    width: 100vw;
+    height: 80vh;
+    padding: 15px;
+    justify-content: space-around;
+}
+.all-items-cart {
+    flex : 6;
+    width: fit-content;
+    gap: 10px;
+    overflow: auto;
+}
+.all-items-cart::-webkit-scrollbar {
+    width: 15px;
+    /* width of the entire scrollbar */
+}
+.all-items-cart::-webkit-scrollbar-track {
+    background: rgb(36, 36, 37);
+    /* color of the tracking area */
+}
+.all-items-cart::-webkit-scrollbar-thumb {
+    background-color: rgb(67, 71, 75);
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
+}
+
+
+.singal-item {
+    background-color: rgb(31, 28, 28);
+    display: flex;
+    align-items: center;
+    /* justify-content: space-evenly; */
+    padding: 20px;
+    margin: 10px;
+    border-radius: 30px;
+}
+
+.buy-now-container {
+    flex: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.buy-now-container2 {
+    height: fit-content;
+    font-size: larger;
+    padding: 100px;
+    background-color: rgb(42, 42, 43);
+    line-height: 50px;
+    border-radius: 30px;
+}
+
+
+@media only screen and (max-width: 700px) {
+    .cart-container-item::-webkit-scrollbar {
+        width: 7px;
+        /* width of the entire scrollbar */
+    }
+    .all-items{
+        /* margin-top: 700px; */
+    }
+    .all-cart-items {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .all-items-cart {
+        justify-content: center;
+        align-items: center;
+    }
+
+}

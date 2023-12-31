@@ -1,5 +1,5 @@
-// const host = "http://localhost:8000";
-const host = "https://e-commerse-2.vercel.app";
+const host = "http://localhost:8000";
+// const host = "https://e-commerse-2.vercel.app";
 
 module.exports.registerRoute = `${host}/register`
 module.exports.loginRoute = `${host}/login`

@@ -1,0 +1,27 @@
+.footer-component{
+    background-color: rgb(50, 48, 48);
+    padding: 30px;
+    max-width: 100vw;
+    margin-top: 30px;
+}
+
+.footer-logo {
+    width: 30%;
+    padding: 10px;
+}
+.footer-items {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+}
+
+@media only screen and (max-width: 700px) {
+    .footer-logo {
+        width: 50%;
+    }
+    .footer-items {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

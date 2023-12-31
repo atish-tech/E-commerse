@@ -8,7 +8,9 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeCartProductRedux, settingCartProduct } from '../../Features/ShopSlice';
+import { removeCartProductRedux, settingCartProduct } from '../../Redux/ShopSlice';
+import Footer from '../Footer/Footer';
+import "./Cart.css"
 
 export const Cart = () => {
 
@@ -16,7 +18,7 @@ export const Cart = () => {
     const token = JSON.parse(localStorage.getItem('code')).data.token;
     const dispatch = useDispatch();
     const cartItem = useSelector(state => state.ShopStore.cartProduct);
-    
+
     const GetAllCartProduct = async () => {
         try {
             const response = await axios.get(getCartProduct, {
@@ -84,39 +86,53 @@ export const Cart = () => {
 
 
     return (
-        <div className='cart-container-item flex'>
-            {/* Products */}
-            <div className='all-items p-4'>
-                {
-                    cartItem.length > 0 &&
-                    cartItem.map((item) => {
-                        return <div key={item.product._id} className='singal-item'>
-                            <img onClick={() => navigateTo(`/product/${item.product._id}`)} className='w-[200px] h-[150px] object-cover cursor-pointer' src={item.product.picture[0]} alt={item._id} />
-                            <div className='items-data'>
-                                <p>{item.product.category} </p>
-                                <p>{item.product.name} </p>
-                                <p >Qun {item.quantity}</p>
-                                <hr className='divide-inherit' />
-                                <p>5$</p>
-                            </div>
-                            <div className='flex-col'>
-                                <IconButton onClick={() => { removeItemFromCart(item) }}><DeleteIcon /> </IconButton>
-                                <IconButton onClick={() => { increaseQuantityInCart(item.product._id) }}><AddIcon /> </IconButton>
-                                <IconButton onClick={() => { decreaseQuantityInCart(item.product._id) }}><RemoveIcon /> </IconButton>
-                            </div>
+        <>
+            <div className='cart-container-item'>
+
+                <div className='all-cart-items'>
+                
+                    {/* Products */}
+                    <div className='all-items-cart'>
+                        {
+                            cartItem.length > 0 &&
+                            cartItem.map((item) => {
+                                return <div key={item.product._id} className='singal-item'>
+
+                                    <img style={{flex : 4}} onClick={() => navigateTo(`/product/${item.product._id}`)} className='w-[250px] h-[150px] object-cover cursor-pointer' src={item.product.picture[0]} alt={item._id} />
+
+                                    <div style={{flex : 4}} className='items-data'>
+                                        <p>{item.product.category} </p>
+                                        <p>{item.product.name} </p>
+                                        <p >Qun {item.quantity}</p>
+                                        <hr className='divide-inherit' />
+                                        <p>5$</p>
+                                    </div>
+
+                                    <div style={{flex : 1}}>
+                                        <IconButton onClick={() => { removeItemFromCart(item) }}><DeleteIcon /> </IconButton>
+                                        {/* <IconButton onClick={() => { increaseQuantityInCart(item.product._id) }}><AddIcon /> </IconButton> */}
+                                        {/* <IconButton onClick={() => { decreaseQuantityInCart(item.product._id) }}><RemoveIcon /> </IconButton> */}
+                                    </div>
+                                </div>
+                            })
+                        }
+                    </div>
+
+                    {/* Price */}
+                    <div className='buy-now-container'>
+                        <div className='buy-now-container2'>
+                            <p>Shopping Cart</p>
+                            <p>Shipping 0</p>
+                            <p>Total 50$</p>
+                            <button className='bg-green-500 px-5 rounded-md'>Buy Now</button>
                         </div>
-                    })
-                }
-            </div>
-            {/* Price */}
-            <div className='buy-now-container'>
-                <div className='buy-now-container2'>
-                    <p>Shopping Cart</p>
-                    <p>Shipping 0</p>
-                    <p>Total 50$</p>
-                    <button className='bg-green-500 px-5 rounded-md'>Buy Now</button>
+                    </div>
                 </div>
+
+                <Footer />
+
             </div>
-        </div>
+
+        </>
     )
 }
