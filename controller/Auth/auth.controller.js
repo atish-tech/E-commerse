@@ -7,19 +7,24 @@ const { newToken } = require('../../utils/utility.function');
 const registerController = async (request, response) => {
     try {
         const { email, password } = request.body;
+
         // email exist
         const checkUser = await userModel.findOne({ email });
-        if (checkUser) {
+        if (checkUser) 
             return response.status(400).send({ message: "Email Already Exist" });
-        }
+        
+
+        //Create New entry in db
         else {
             const hash = await bcryptjs.hash(password, 9);   // Hash Password
+
             const user = await userModel.create({   // Add New user in DB
-                ...request.body, password: hash, isVerified: true, isSeller: false,
+                ...request.body, password: hash, isSeller: false,
             });
 
-            let token = await newToken(user);
-            response.status(201).json({ message: 'Account Created Sucessful', user, token });
+            const token = await newToken(user); // Generate goken
+
+            response.status(201).json({ message: 'Account Created Sucessful', token });
         }
     } catch (error) {
         response.status(400).json({ message: "Server Error" });
@@ -53,20 +58,17 @@ const sellerRegisterCoontroller = async (request, response) => {
 const loginController = async (request, response) => {
     try {
         const { email, password } = request.body;
-        const user = await userModel.findOne({ email });
-        // check email 
-        if (!user) {
-            return response.status(400).json({ message: "Email Not Exist" });
 
-        }
-        // check verified or not
-        if (user.isVerified === false) {
-            return response.status(400).json({ message: "Email Not Verified", });
-        }
+        const user = await userModel.findOne({ email });
+
+        // check email 
+        if (!user) 
+            return response.status(400).json({ message: "Email Not Exist" });
+        
         // check password
         if (await bcryptjs.compare(password , user.password)) {
-            let token = newToken(user);
-            return response.status(201).json({ message: "Login Sucessfull", user, token });
+            const token = newToken(user);  // generate new token
+            return response.status(201).json({ message: "Login Sucessfull" , token });
         }
         else {
             return response.status(400).json({ message: "Incorrect Password" });

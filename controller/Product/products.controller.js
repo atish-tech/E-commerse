@@ -1,5 +1,5 @@
 const productModel = require("../../model/Product/product.model");
-
+const cartModel = require("../../model/Product/cart.model");
 // get all product
 const getProduct = async (request, response) => {
     try {
@@ -14,7 +14,16 @@ const getProduct = async (request, response) => {
 const getSingalProduct = async (request, response) => {
     try {
         const { productId } = await request.params;
-        return response.status(200).json(await productModel.findById(productId));
+        const productDetail = await productModel.findById(productId);
+
+        const cartDetailOfUser = await cartModel.findOne({ userId: request.user._id });
+        for(let i=0; i<cartDetailOfUser.products.length; i++){
+            if(cartDetailOfUser.products[i].product == productId){
+                productDetail.isAddedToCart = true;
+            }
+        }
+        console.log(productDetail);
+        return response.status(200).json({productDetail});
     }
     catch (error) {
         return response.status(400).json({ message: "data not found" });

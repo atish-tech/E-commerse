@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 // const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    image: { type: String },
     name: {
         type: String,
         require: true,
@@ -17,13 +16,9 @@ const userSchema = new mongoose.Schema({
     },
     isVerified: {
         type: Boolean,
-        default: false,
+        default: true,
     },
     isSeller: {
-        type: Boolean,
-        default: false,
-    },
-    isAuthGoogle: {
         type: Boolean,
         default: false,
     },
@@ -37,5 +32,5 @@ const userSchema = new mongoose.Schema({
 //     return await bcrypt.compare(enteredPassword, this.password);
 // };
 
-const user = mongoose.model('e-commerse-users', userSchema);
+const user = mongoose.model('users', userSchema);
 module.exports = user;
