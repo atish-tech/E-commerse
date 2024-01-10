@@ -1,0 +1,13 @@
+.login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    width: 40vw;
+    height: 40vw;
+    background-color: black;
+}
+
+@media screen and (max-width: 650px) {
+
+}
