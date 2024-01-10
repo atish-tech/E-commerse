@@ -1,13 +1,25 @@
 .login {
     display: flex;
+    flex-direction: column;
+    gap: 30px;
     align-items: center;
     justify-content: center;
     padding: 10px;
-    width: 40vw;
-    height: 40vw;
-    background-color: black;
+    width: 30vw;
+    height: 90vh;
+    border-radius: 40px;
+    color: aliceblue;
+}
+.login-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-@media screen and (max-width: 650px) {
-
+@media screen and (max-width: 750px) {
+    .login {
+        width: 90vw;
+    }
 }
